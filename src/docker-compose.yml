@@ -18,7 +18,7 @@ services:
       context: .
       dockerfile: Payroc.LoadBalancer/Dockerfile
     ports:
-     - 9000:9000
+     - 5000:8081
     networks:
      - payroc
 
