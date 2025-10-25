@@ -1,0 +1,38 @@
+services:
+  payroc.server:
+    image: ${DOCKER_REGISTRY-}payrocserver
+    build:
+      context: .
+      dockerfile: Payroc.Server/Dockerfile
+    ports:
+     - 8081:8081
+    environment:
+     - OTEL_EXPORTER_OTLP_ENDPOINT=http://payroc.dashboard:18889
+     - OTEL_EXPORTER_OTLP_PROTOCOL=grpc
+    networks:
+     - payroc
+
+  payroc.loadbalancer:
+    image: ${DOCKER_REGISTRY-}payrocloadbalancer
+    build:
+      context: .
+      dockerfile: Payroc.LoadBalancer/Dockerfile
+    ports:
+     - 9000:9000
+    networks:
+     - payroc
+
+  payroc.dashboard:
+    image: mcr.microsoft.com/dotnet/nightly/aspire-dashboard:9.2
+    container_name: dashboard
+    environment: 
+     - DOTNET_DASHBOARD_UNSECURED_ALLOW_ANONYMOUS=true
+    ports:
+     - 18888:18888
+     - 4317:18889
+    networks:
+     - payroc
+
+networks:
+  payroc:
+

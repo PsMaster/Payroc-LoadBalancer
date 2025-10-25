@@ -1,0 +1,10 @@
+{
+  "profiles": {
+    "Payroc.LoadBalancer": {
+      "commandName": "Project"
+    },
+    "Container (Dockerfile)": {
+      "commandName": "Docker"
+    }
+  }
+}
