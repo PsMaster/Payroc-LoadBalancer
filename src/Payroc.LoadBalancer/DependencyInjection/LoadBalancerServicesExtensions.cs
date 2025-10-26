@@ -2,6 +2,7 @@
 using Payroc.LoadBalancer.Endpoints.Requests;
 using System.Threading.Channels;
 using Payroc.LoadBalancer.Configuration;
+using Payroc.LoadBalancer.Core.DependencyInjection;
 
 namespace Payroc.LoadBalancer.DependencyInjection
 {
@@ -11,7 +12,6 @@ namespace Payroc.LoadBalancer.DependencyInjection
         {
             var hostConfigurationOptions = new HostConfigurationOptions();
             configuration.GetSection(nameof(HostConfigurationOptions)).Bind(hostConfigurationOptions);
-            serviceCollection.AddSingleton(Channel.CreateUnbounded<ControlCommand>(new UnboundedChannelOptions { SingleReader = true, SingleWriter = true }));
             serviceCollection.Configure<HostOptions>(o =>
             {
                 o.BackgroundServiceExceptionBehavior = hostConfigurationOptions.BackgroundServiceExceptionBehavior;
@@ -21,6 +21,7 @@ namespace Payroc.LoadBalancer.DependencyInjection
                 o.ServicesStopConcurrently = hostConfigurationOptions.ServicesStopConcurrently;
             });
             serviceCollection.AddHostedService<WorkerService>();
+            serviceCollection.RegisterLoadBalancerCoreServices();
             serviceCollection.AddHealthChecks();
             return serviceCollection;
         }
