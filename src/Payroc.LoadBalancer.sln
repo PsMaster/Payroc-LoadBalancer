@@ -3,13 +3,13 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.14.36518.9
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Payroc.LoadBalancer", "Payroc.LoadBalancer\Payroc.LoadBalancer.csproj", "{D5E2AC3B-5950-404F-A414-8ECFAFE8A4B5}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Payroc.Server", "Payroc.Server\Payroc.Server.csproj", "{DC98CCF2-A541-48BB-A2A9-1FBD4C067C6F}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Payroc.LoadBalancer.Core", "Payroc.LoadBalancer.Core\Payroc.LoadBalancer.Core.csproj", "{E2EB5784-C69B-4176-8614-7BD6ABA24251}"
 EndProject
 Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "docker-compose.dcproj", "{81DDED9D-158B-E303-5F62-77A2896D2A5A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Payroc.LoadBalancer", "Payroc.LoadBalancer\Payroc.LoadBalancer.csproj", "{845DA40B-F59D-D238-D318-0CD3FDC328B8}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -17,10 +17,6 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{D5E2AC3B-5950-404F-A414-8ECFAFE8A4B5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{D5E2AC3B-5950-404F-A414-8ECFAFE8A4B5}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{D5E2AC3B-5950-404F-A414-8ECFAFE8A4B5}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{D5E2AC3B-5950-404F-A414-8ECFAFE8A4B5}.Release|Any CPU.Build.0 = Release|Any CPU
 		{DC98CCF2-A541-48BB-A2A9-1FBD4C067C6F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{DC98CCF2-A541-48BB-A2A9-1FBD4C067C6F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DC98CCF2-A541-48BB-A2A9-1FBD4C067C6F}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -33,6 +29,10 @@ Global
 		{81DDED9D-158B-E303-5F62-77A2896D2A5A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{81DDED9D-158B-E303-5F62-77A2896D2A5A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{81DDED9D-158B-E303-5F62-77A2896D2A5A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{845DA40B-F59D-D238-D318-0CD3FDC328B8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{845DA40B-F59D-D238-D318-0CD3FDC328B8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{845DA40B-F59D-D238-D318-0CD3FDC328B8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{845DA40B-F59D-D238-D318-0CD3FDC328B8}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

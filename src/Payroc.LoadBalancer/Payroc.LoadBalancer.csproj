@@ -6,7 +6,7 @@
 	  <ImplicitUsings>enable</ImplicitUsings>
 	  <UserSecretsId>dotnet-Payroc.LoadBalancer-9592c232-f006-4edb-a832-1f82796aaaf3</UserSecretsId>
 	  <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
-	  <DockerfileContext>..\src</DockerfileContext>
+	  <DockerComposeProjectPath>..\docker-compose.dcproj</DockerComposeProjectPath>
   </PropertyGroup>
 
   <ItemGroup>

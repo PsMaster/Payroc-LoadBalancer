@@ -12,16 +12,6 @@ services:
     networks:
      - payroc
 
-  payroc.loadbalancer:
-    image: ${DOCKER_REGISTRY-}payrocloadbalancer
-    build:
-      context: .
-      dockerfile: Payroc.LoadBalancer/Dockerfile
-    ports:
-     - 5000:8081
-    networks:
-     - payroc
-
   payroc.dashboard:
     image: mcr.microsoft.com/dotnet/nightly/aspire-dashboard:9.2
     container_name: dashboard
@@ -33,6 +23,18 @@ services:
     networks:
      - payroc
 
+  payroc.loadbalancer:
+    image: ${DOCKER_REGISTRY-}payrocloadbalancer
+    build:
+      context: .
+      dockerfile: Payroc.LoadBalancer/Dockerfile
+    ports:
+     - 9000:8080
+     - 9001:8081
+    networks:
+     - payroc
+
 networks:
   payroc:
+
 

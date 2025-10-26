@@ -20,7 +20,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Payroc.LoadBalancer.Core\Payroc.LoadBalancer.Core.csproj" />
-    <ProjectReference Include="..\Payroc.LoadBalancer\Payroc.LoadBalancer.csproj" />
   </ItemGroup>
 
   <ItemGroup>
