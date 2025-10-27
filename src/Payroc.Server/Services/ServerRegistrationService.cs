@@ -1,4 +1,6 @@
 ﻿using Consul;
+using System.Net;
+using System.Net.Sockets;
 
 namespace Payroc.Server.Services
 {
@@ -33,11 +35,20 @@ namespace Payroc.Server.Services
                 Timeout = TimeSpan.FromSeconds(5)
             };
 
+            string hostName = Dns.GetHostName();
+            IPAddress? containerIp = (await Dns.GetHostEntryAsync(hostName, cancellationToken)).AddressList
+                .FirstOrDefault(ip => ip.AddressFamily == AddressFamily.InterNetwork);
+            if (containerIp == null)
+            {
+                _logger.LogCritical("Unable to retrieve service internal IP.");
+                return;
+            }
+
             var registration = new AgentServiceRegistration()
             {
                 ID = _registrationId,
                 Name = serviceName,
-                Address = _configuration["ConsulConfig:ServiceAddress"],
+                Address = containerIp.ToString(),
                 Port = servicePort,
                 Tags = ["payroc-server-v1"],
                 Checks = [httpCheck]

@@ -12,6 +12,8 @@ namespace Payroc.LoadBalancer.Core.DependencyInjection
         {
             serviceCollection.AddSingleton<ILoadBalancerService, LoadBalancerService>();
             serviceCollection.AddSingleton<IServerDiscoveryService, ServerDiscoveryService>();
+            serviceCollection.AddSingleton<IBackendServiceHealthChecker, BackendServiceHealthChecker>();
+            serviceCollection.AddSingleton<IServerSelectorService, ServerSelectorService>();
             serviceCollection.AddSingleton<IConsulClient, ConsulClient>(p =>
             {
                 var consulAddress = configuration["ConsulConfig:ConsulAddress"] ?? "http://consul:8500";

@@ -5,6 +5,7 @@ services:
       context: .
       dockerfile: Payroc.Server/Dockerfile
     ports:
+     - 8080:8080
      - 8081:8081
     environment:
      - OTEL_EXPORTER_OTLP_ENDPOINT=http://payroc.dashboard:18889
@@ -53,5 +54,5 @@ services:
 networks:
   payroc:
     driver: bridge
-
+    name: payroc
 

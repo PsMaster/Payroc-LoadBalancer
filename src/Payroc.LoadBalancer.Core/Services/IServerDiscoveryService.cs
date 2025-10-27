@@ -1,9 +1,10 @@
-﻿using System.Net;
+﻿using Payroc.LoadBalancer.Core.Models;
+using System.Net;
 
 namespace Payroc.LoadBalancer.Core.Services
 {
     public interface IServerDiscoveryService
     {
-        Task<List<IPEndPoint>> GetServers(string serverType, CancellationToken cancellationToken = default);
+        Task UpdateServers(string serverType, ServerState currentState, CancellationToken cancellationToken = default);
     }
 }

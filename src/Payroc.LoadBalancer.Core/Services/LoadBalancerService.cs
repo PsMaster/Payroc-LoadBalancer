@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Payroc.LoadBalancer.Core.DependencyInjection.Options;
+using Payroc.LoadBalancer.Core.Models;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
@@ -12,21 +13,24 @@ namespace Payroc.LoadBalancer.Core.Services
         private readonly TcpListener _tcpListener;
         private readonly ILogger<LoadBalancerService> _logger;
         private readonly IServerDiscoveryService _serverDiscoveryService;
+        private readonly IServerSelectorService _serverSelectorService;
         private readonly LoadBalancerServerOptions _serverOptions;
+        private readonly ServerState _currentServers;
         private readonly ConsulConfig _consulConfig;
-        private Task? _trafficHandlingTask;
 
-        public LoadBalancerService(ILogger<LoadBalancerService> logger, IServerDiscoveryService serverDiscoveryService,
+        public LoadBalancerService(ILogger<LoadBalancerService> logger, IServerDiscoveryService serverDiscoveryService, IServerSelectorService serverSelectorService,
             IOptions<ConsulConfig> consulOptions, IOptions<LoadBalancerServerOptions> serverOptions)
         {
             _logger = logger;
             _serverDiscoveryService = serverDiscoveryService;
+            _serverSelectorService = serverSelectorService;
             _serverOptions = serverOptions.Value;
             _consulConfig = consulOptions.Value;
             _tcpListener = new TcpListener(IPAddress.Parse(_serverOptions.IpAddress!), _serverOptions.Port);
+            _currentServers = new ServerState([]);
         }
 
-        public async Task StartAsync(CancellationToken cancellationToken)
+        public Task StartAsync(CancellationToken cancellationToken)
         {
             try
             {
@@ -34,13 +38,16 @@ namespace Payroc.LoadBalancer.Core.Services
                 _tcpListener.Start();
                 _logger.LogInformation("TCP listener started on port {Port}", _serverOptions.Port);
                 var linkedToken = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken).Token;
-                _trafficHandlingTask = Task.Run(async () => await ListenForTraffic(linkedToken), linkedToken);
+                _ = Task.Run(async () => await ListenForTraffic(linkedToken), linkedToken);
+                _ = Task.Run(async () => await DiscoverServers(linkedToken), linkedToken);
             }
             catch (Exception e)
             {
                 _logger.LogCritical(e, "Server exception occured.");
                 throw;
             }
+
+            return Task.CompletedTask;
         }
 
         private async Task ListenForTraffic(CancellationToken cancellationToken)
@@ -70,34 +77,50 @@ namespace Payroc.LoadBalancer.Core.Services
 
         private async Task HandleClientRequestAsync(TcpClient client, CancellationToken cancellationToken)
         {
-            IPEndPoint backend = new IPEndPoint(IPAddress.Any, 8080);
+            IPEndPoint? backendEndpoint = null; 
             try
             {
-                //TODO complete
-                var server = (await _serverDiscoveryService.GetServers(_consulConfig.ServiceName ?? "payrocserver", cancellationToken)).First();
-                using (client)
-                using (var stream = client.GetStream())
+                backendEndpoint = _serverSelectorService.GetNextServer(_currentServers);
+                if (backendEndpoint == null)
                 {
-                    var buffer = new byte[1024];
-                    int bytesRead;
-                    while (!cancellationToken.IsCancellationRequested && (bytesRead = await stream.ReadAsync(buffer, cancellationToken)) != 0)
-                    {
-                        var receivedData = Encoding.UTF8.GetString(buffer, 0, bytesRead);
-                        _logger.LogInformation("Received from client: {Data}", receivedData.Trim());
-                        var responseData = Encoding.UTF8.GetBytes($"Echo: {receivedData}");
-                        await stream.WriteAsync(responseData, cancellationToken);
-                    }
+                    _logger.LogCritical("Failed to retrieve next server. Time:{Timestamp}", DateTime.UtcNow);
+                    return;
                 }
-                // Pick backend
-                // connect
+
+                using var backendClient = new TcpClient();
+                await backendClient.ConnectAsync(backendEndpoint.Address, backendEndpoint.Port, cancellationToken);
+                await using var clientStream = client.GetStream();
+                await using var backendStream = backendClient.GetStream();
+                var clientStreamTask = clientStream.CopyToAsync(backendStream, 81920, cancellationToken);
+                var backendStreamTask = backendStream.CopyToAsync(clientStream, 81920, cancellationToken);
+                _logger.LogTrace("Proxy {Client} <-> {Backend}", client.Client.RemoteEndPoint, backendEndpoint);
+                await Task.WhenAny(clientStreamTask, backendStreamTask);
             }
-            catch (Exception)
+            catch (Exception e)
             {
-                _logger.LogWarning("Backend connection failed. Server:{Backend} Time:{Timestamp}", backend, DateTime.UtcNow);
+                _logger.LogWarning(e, "Was not able to connect to backend server.");
+                _logger.LogWarning("Backend connection failed. Server:{Backend} Time:{Timestamp}", backendEndpoint, DateTime.UtcNow);
             }
             finally
             {
                 client.Close();
+            }
+        }
+
+        private async Task DiscoverServers(CancellationToken cancellationToken)
+        {
+            while (!cancellationToken.IsCancellationRequested)
+            {
+                try
+                {
+                    await _serverDiscoveryService.UpdateServers(_consulConfig.ServiceName!, _currentServers, cancellationToken);
+                }
+                catch (Exception)
+                {
+                    _logger.LogWarning("Server discovery failed. Time:{Timestamp}", DateTime.UtcNow);
+                }
+
+                await Task.Delay(TimeSpan.FromSeconds(_serverOptions.ServerDiscoveryDelayInSecond), cancellationToken);
             }
         }
 
