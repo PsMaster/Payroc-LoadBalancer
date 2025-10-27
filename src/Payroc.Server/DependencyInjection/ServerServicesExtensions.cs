@@ -1,5 +1,4 @@
-﻿using Microsoft.Extensions.Diagnostics.HealthChecks;
-using OpenTelemetry;
+﻿using Consul;
 using OpenTelemetry.Metrics;
 using OpenTelemetry.Resources;
 using OpenTelemetry.Trace;
@@ -10,7 +9,7 @@ namespace Payroc.Server.DependencyInjection
 {
     public static class ServerServicesExtensions
     {
-        public static IServiceCollection RegisterServices(this IServiceCollection serviceCollection)
+        public static IServiceCollection RegisterServices(this IServiceCollection serviceCollection, IConfiguration configuration)
         {
             serviceCollection.AddSingleton<ServerMetrics>();
 
@@ -31,7 +30,18 @@ namespace Payroc.Server.DependencyInjection
                 });
 
             serviceCollection.AddSingleton<IHealthStatusService, HealthStatusService>();
-            serviceCollection.AddHealthChecks().AddCheck<HealthStatusChecker>("Status check", HealthStatus.Healthy);
+            serviceCollection.AddHealthChecks().AddCheck<HealthStatusChecker>("Status check", Microsoft.Extensions.Diagnostics.HealthChecks.HealthStatus.Healthy);
+
+            serviceCollection.AddSingleton<IConsulClient, ConsulClient>(p =>
+            {
+                var consulAddress = configuration["ConsulConfig:ConsulAddress"] ?? "http://consul:8500";
+                return new ConsulClient(cfg =>
+                {
+                    cfg.Address = new Uri(consulAddress!);
+                });
+            });
+
+            serviceCollection.AddHostedService<ServerRegistrationService>();
 
             return serviceCollection;
         }

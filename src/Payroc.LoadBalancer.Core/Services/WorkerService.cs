@@ -2,7 +2,7 @@
 
 namespace Payroc.LoadBalancer.Core.Services
 {
-    public class WorkerService : IHostedService
+    public class WorkerService : BackgroundService
     {
         private readonly ILoadBalancerService _loadBalancerService;
 
@@ -11,14 +11,9 @@ namespace Payroc.LoadBalancer.Core.Services
             _loadBalancerService = loadBalancerService;
         }
 
-        public async Task StartAsync(CancellationToken cancellationToken)
+        protected override async Task ExecuteAsync(CancellationToken cancellationToken)
         {
             await _loadBalancerService.StartAsync(cancellationToken);
-        }
-
-        public async Task StopAsync(CancellationToken cancellationToken)
-        {
-            await _loadBalancerService.StopAsync(cancellationToken);
         }
     }
 }

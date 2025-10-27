@@ -1,4 +1,5 @@
 ﻿using Payroc.LoadBalancer.DependencyInjection;
+using Payroc.LoadBalancer.Endpoints;
 
 namespace Payroc.LoadBalancer
 {
@@ -14,7 +15,7 @@ namespace Payroc.LoadBalancer
             builder.Services.RegisterServices(builder.Configuration);
 
             var app = builder.Build();
-
+            app.MapApiEndpoints();
             await app.RunAsync();
         }
     }

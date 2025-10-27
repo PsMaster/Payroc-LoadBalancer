@@ -10,7 +10,7 @@ namespace Payroc.Server
         {
             var builder = WebApplication.CreateBuilder(args);
             builder.AddOpenTelemetry();
-            builder.Services.RegisterServices();
+            builder.Services.RegisterServices(builder.Configuration);
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
             

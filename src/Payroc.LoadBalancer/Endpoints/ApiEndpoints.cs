@@ -7,7 +7,11 @@ namespace Payroc.LoadBalancer.Endpoints
         public static void MapApiEndpoints(this WebApplication app)
         {
             app.MapGet("/health", (HttpRequest _) => Results.Ok());
-            app.MapPost("/control/balancing", async (ChangeBalancingModeRequest request) => {});
+            app.MapPost("/control/balancing", async (ChangeBalancingModeRequest request) =>
+            {
+                var a = request;
+                return Results.Ok();
+            });
         }
     }
 }
