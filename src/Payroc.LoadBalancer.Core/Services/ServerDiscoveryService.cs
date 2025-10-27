@@ -11,6 +11,7 @@ namespace Payroc.LoadBalancer.Core.Services
     {
         private readonly IConsulClient _consulClient;
         private readonly ILogger<ServerDiscoveryService> _logger;
+        // TODO improvement implementation
         private readonly IBackendServiceHealthChecker _healthChecker;
         private readonly LoadBalancerServerOptions _serverOptions;
 

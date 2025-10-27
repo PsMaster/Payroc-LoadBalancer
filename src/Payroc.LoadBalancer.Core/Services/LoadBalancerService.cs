@@ -4,7 +4,6 @@ using Payroc.LoadBalancer.Core.DependencyInjection.Options;
 using Payroc.LoadBalancer.Core.Models;
 using System.Net;
 using System.Net.Sockets;
-using System.Text;
 
 namespace Payroc.LoadBalancer.Core.Services
 {

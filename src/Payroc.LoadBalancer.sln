@@ -13,6 +13,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Payroc.LoadBalancer", "Payr
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{02EA681E-C7D8-13C7-8484-4AC65E1B71E8}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Payroc.UnitTests", "..\Payroc.UnitTests\Payroc.UnitTests.csproj", "{CECDA497-D86F-4F28-8D97-CD37C3EE8764}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -35,9 +37,16 @@ Global
 		{845DA40B-F59D-D238-D318-0CD3FDC328B8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{845DA40B-F59D-D238-D318-0CD3FDC328B8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{845DA40B-F59D-D238-D318-0CD3FDC328B8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CECDA497-D86F-4F28-8D97-CD37C3EE8764}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CECDA497-D86F-4F28-8D97-CD37C3EE8764}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CECDA497-D86F-4F28-8D97-CD37C3EE8764}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CECDA497-D86F-4F28-8D97-CD37C3EE8764}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{CECDA497-D86F-4F28-8D97-CD37C3EE8764} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {C9C1C62C-1B64-44D6-A671-FB2CD3559690}
